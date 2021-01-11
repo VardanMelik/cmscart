@@ -1,12 +1,13 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const config = require('./config/db');
 
 // This app
 const app = express();
 
 // Connect to db
-mongoose.connect('mongodb://localhost:27017/cmscart', {
+mongoose.connect(config.database, {
     useUnifiedTopology: true,
     useNewUrlParser: true
 });
@@ -35,5 +36,8 @@ app.listen(port, () => {
 
 
 app.get('/', (req, res) => {
-    res.send('Server is working');
+    res.render('index', {
+        title: 'CMS Cart'
+    }
+    );
 })
