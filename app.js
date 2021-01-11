@@ -2,9 +2,15 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const config = require('./config/db');
+const router = require('./routes/pages');
+const bodyParser = require('body-parser');
 
 // This app
 const app = express();
+
+// Body Parser middleware
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 // Connect to db
 mongoose.connect(config.database, {
@@ -35,9 +41,9 @@ app.listen(port, () => {
 });
 
 
-app.get('/', (req, res) => {
-    res.render('index', {
-        title: 'CMS Cart'
-    }
-    );
-})
+// Set routes
+const pages = require('./routes/pages');
+app.use('/', pages);
+
+const adminPages = require('./routes/adminPages');
+app.use('/admin', adminPages);
