@@ -4,13 +4,33 @@ const mongoose = require('mongoose');
 const config = require('./config/db');
 const router = require('./routes/pages');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const  expressValidator = require('express-validator');
 
 // This app
 const app = express();
 
+
 // Body Parser middleware
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+
+// Express Session middleware
+app.set('trust proxy', 1); // trust first proxy
+app.use( session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true}
+}));
+
+// Express Messages middleware
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+  res.locals.messages = require('express-messages')(req, res);
+  next();
+});
+
 
 // Connect to db
 mongoose.connect(config.database, {
